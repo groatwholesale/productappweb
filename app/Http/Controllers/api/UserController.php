@@ -7,6 +7,7 @@ use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,27 +18,79 @@ class UserController extends Controller
     {
         try{
             $validator = Validator::make($request->all(), [
-                'email' => 'required|string|email|max:255',
-                'password' => 'required|string|min:6',
+                'phonenumber' => 'required|numeric'
             ]);
             if ($validator->fails())
             {
                 return $this->errorResponse(['errors'=>$validator->errors()], 422);
             }
-            $user = User::where('email', $request->email)->where('role_id',0)->first();
+            $user = User::where('phonenumber', $request->phonenumber)->where('role_id',0)->first();
             if ($user) {
-                if (Hash::check($request->password, $user->password)) {
-                    $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-                    $response = ['token' => $token];
-                    return $this->successResponse($response,"Login Successfully");
-                } else {
-                    $response = ["message" => "Credentials does not match"];
-                    return $this->errorResponse($response, 422);
-                }
+                $user->otp=rand(1111,9999);
+                $user->role_id=0;
+                $user->save();
+                // $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+                $response = ['token' => $user];
             } else {
-                $response = ["message" =>'Credentials does not match'];
-                return $this->errorResponse($response, 422);
+                $user=new User;
+                $user->phonenumber=$request->phonenumber;
+                $user->otp=rand(1111,9999);
+                $user->role_id=0;
+                $user->save();
+                // $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+                $response = ["token" => $user];
             }
+            return $this->successResponse($response,"Login Successfully");
+        }catch(Exception $ex){
+            return $this->errorResponse($ex->getMessage(), 422);
+        }
+    }
+
+    public function opt_verification(Request $request)
+    {
+        try{
+            $validator = Validator::make($request->all(), [
+                'otp' => 'required|numeric',
+                'user_id' => 'required|numeric'
+            ]);
+            if ($validator->fails())
+            {
+                return $this->errorResponse(['errors'=>$validator->errors()], 422);
+            }
+            $user = User::where(['otp'=>$request->otp,'id'=>$request->user_id])->where('role_id',0)->first();
+            if ($user) {
+                $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+                $response = ['token' => $token];
+                $user->otp=null;
+                $user->save();
+                return $this->successResponse($response,"Login Successfully");
+            } else {
+                return $this->errorResponse("Please enter valid OTP", 422);
+            }
+        }catch(Exception $ex){
+            return $this->errorResponse($ex->getMessage(), 422);
+        }
+    }
+
+    public function get_profile()
+    {
+        try{
+            $response = ['user' => Auth::user()];
+            return $this->successResponse($response,"Profile details retrieved Successfully");
+        }catch(Exception $ex){
+            return $this->errorResponse($ex->getMessage(), 422);
+        }
+    }
+
+    public function update_profile(Request $request)
+    {
+        try{
+            $user=User::find(Auth::user()->id);
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->save();
+            $response = ['user' => $user];
+            return $this->successResponse($response,"Profile details updated Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
         }

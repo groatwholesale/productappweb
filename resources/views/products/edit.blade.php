@@ -29,6 +29,15 @@
                     @enderror
                 </div>
                 <div class="form-group">
+                    <label for="">Products Price</label>
+                    <input type="number" name="price" value="{{ $product->price }}" class="form-control @error('price') is-invalid @enderror" placeholder="Enter Products Price">
+                    @error('price')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="form-group">
                     <label for="">Products Category</label>
                     <select name="category" class="form-control @error('category') is-invalid @enderror">
                     <option value="">Select Category</option>

@@ -10,8 +10,18 @@
             <form action="{{ route('category.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
+                    <label for="">Category Name</label>
                     <input type="text" name="categoryname" value="{{ old('categoryname') }}" class="form-control @error('categoryname') is-invalid @enderror" placeholder="Enter Category Name">
                     @error('categoryname')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="">Category Image</label>
+                    <input type="file" name="image" value="{{ old('image') }}" class="form-control @error('image') is-invalid @enderror" placeholder="Enter Category Name">
+                    @error('image')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>

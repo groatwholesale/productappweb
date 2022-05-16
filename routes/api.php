@@ -22,7 +22,10 @@ use App\Http\Controllers\api\CategoryController;
 // Route::prefix('api')->group(function(){
 
     Route::post('/login', [UserController::class,'login'])->name('login.api');
+    Route::post('/opt_verification', [UserController::class,'opt_verification'])->name('opt_verification.api');
     Route::middleware('auth:api')->group(function(){
+        Route::get('/get_profile', [UserController::class,'get_profile'])->name('get_profile.api');
+        Route::post('/update_profile', [UserController::class,'update_profile'])->name('update_profile.api');
         Route::post('/logout', [UserController::class,'logout'])->name('logout.api');
         Route::get('/category', [CategoryController::class,'index']);
         Route::get('/products/{id?}', [ProductController::class,'index']);

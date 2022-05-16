@@ -61,6 +61,7 @@ class ProductController extends Controller
             foreach($records as $record){
                 $id = $record->id;
                 $title = $record->title;
+                $price = $record->price;
                 $description = $record->description;
                 $image = "Image";
         
@@ -68,6 +69,7 @@ class ProductController extends Controller
                     "id" => $id,
                     "image" => $image,
                     "title" => $title,
+                    "price" => $price,
                     "description" => $description,
                     "action" => '<div class="d-flex"><a href="'.route('products.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a onclick="event.preventDefault();
                     document.getElementById(\'productsdelete-form\').submit();" class="btn btn-danger"><i class="fa fa-trash"></i></a></div><form id="productsdelete-form" action="'.route('products.destroy',$id) .'" method="POST" class="d-none">'.csrf_token().'<input type="hidden" name="_method" value="DELETE"></form>'
@@ -118,6 +120,7 @@ class ProductController extends Controller
             $product->title=$request->title;
             $product->description=$request->description;
             $product->category_id=$request->category;
+            $product->price=$request->price;
             if($product->save()){
                 foreach($request->images as $file){
                     $destinationpath=public_path("uploads/products/".$product->id)."/".
@@ -174,7 +177,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         try{
-            $product->update(['title'=>$request->title,'description'=>$request->description,'category_id'=>$request->category]);
+            $product->update(['title'=>$request->title,'description'=>$request->description,'price'=>$request->price,'category_id'=>$request->category]);
             return redirect()->route('products.index')->withSuccess("Products updated successfully.");
         }
         catch(Exception $ex){

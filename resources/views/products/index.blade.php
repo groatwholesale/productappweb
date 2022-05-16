@@ -21,6 +21,7 @@
                         <td>Image</td>
                         <td>Title</td>
                         <td>Description</td>
+                        <td>Price</td>
                         <td>Action</td>
                       </tr>
                     </thead>
@@ -46,6 +47,7 @@
             { data: 'image' },
             { data: 'title' },
             { data: 'description' },
+            { data: 'price' },
             { data: 'action' },
          ],
          columnDefs: [
@@ -53,7 +55,8 @@
             { targets: [1], sortable: false,searchable: false},
             { targets: [2], sortable: true,searchable: true},
             { targets: [3], sortable: true,searchable: true},
-            { targets: [4], sortable: false,searchable: false},
+            { targets: [4], sortable: true,searchable: true},
+            { targets: [5], sortable: false,searchable: false},
         ]
       });
 
