@@ -86,8 +86,18 @@ class UserController extends Controller
     {
         try{
             $user=User::find(Auth::user()->id);
-            $user->name=$request->name;
-            $user->email=$request->email;
+            if(isset($request->name) && !empty($request->name)){
+                $user->name=$request->name;
+            }
+            if(isset($request->email) && !empty($request->email)){
+                $user->email=$request->email;
+            }
+            if(isset($request->birth_date) && !empty($request->birth_date)){
+                $user->birth_date=$request->birth_date;
+            }
+            if(isset($request->gender) && !empty($request->gender)){
+                $user->gender=$request->gender;
+            }
             $user->save();
             $response = ['user' => $user];
             return $this->successResponse($response,"Profile details updated Successfully");

@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
             $table->string('phonenumber')->nullable();
             $table->integer('otp')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->enum('gender',['male','female'])->nullable();
             $table->integer('role_id')->default(0)->comment("1=Admin,0=Customer");
             $table->rememberToken();
             $table->timestamps();
