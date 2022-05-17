@@ -41,8 +41,8 @@
          ajax: "{{route('order.lists')}}",
          columns: [
             { data: 'id' },
-            { data: 'name' },
-            { data: 'username' },
+            { data: 'title',name:'products.title' },
+            { data: 'name',name:'users.name' },
             { data: 'quantity' },
             { data: 'action' },
          ],

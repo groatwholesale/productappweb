@@ -66,6 +66,12 @@
                     @forelse ($product->attachments as $image)
                         <div class="col-3">
                             <img src="{{$image->file_name}}" width="100">
+                            {{-- @dd(route('productimage.delete',$image->id)); --}}
+                            <form action="{{ route('productimage.delete',$image->id) }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Delete</button>
+                            </form>
                         </div>
                     @empty
                         <p>No images found</p>                        

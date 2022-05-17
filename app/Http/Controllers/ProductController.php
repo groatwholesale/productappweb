@@ -208,10 +208,25 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        dd("Sdf");
         try{
             if($product->delete()){
                 return redirect()->route('products.index')->withSuccess("Product deleted successfully.");
             }
+        }
+        catch(Exception $ex){
+            return redirect()->route('products.index')->withError($ex->getMessage());
+        }
+    }
+
+    public function product_delete_image($id)
+    {
+        dd($id);
+        try{
+            $productid=ProductsImage::where('id',$id)->first();
+            unlink("uploads/products/".$productid."/".$productid->file_name);
+            ProductsImage::where('id',$id)->delete();
+            return redirect()->route('products.index')->withSuccess("Product image deleted successfully.");
         }
         catch(Exception $ex){
             return redirect()->route('products.index')->withError($ex->getMessage());

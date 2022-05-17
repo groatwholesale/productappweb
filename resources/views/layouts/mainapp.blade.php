@@ -35,8 +35,8 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is(['home']) ? 'active' : '' }}" href="{{route('home')}}">
+            <li class="nav-item {{ request()->is(['home']) ? 'active' : '' }}">
+                <a class="nav-link" href="{{route('home')}}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -50,7 +50,7 @@
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Products</span></a>
             </li>
-            <li class="nav-item {{ request()->is(['order']) ? 'active' : '' }}">
+            <li class="nav-item {{ request()->is(['orders']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('order.index') }}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Orders</span></a>

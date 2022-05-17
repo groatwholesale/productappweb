@@ -29,3 +29,4 @@ Route::get('category/lists',[CategoryController::class,'lists'])->name('category
 Route::get('products/lists',[ProductController::class,'lists'])->name('products.lists');
 Route::get('orders',[OrderController::class,'index'])->name('order.index');
 Route::get('orders/lists',[OrderController::class,'lists'])->name('order.lists');
+Route::delete('products/deleteimage/{id}',[ProductController::class,'product_delete_image'])->name('productimage.delete');

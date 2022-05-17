@@ -49,7 +49,9 @@ class OrderController extends Controller
             // Fetch records
             $records = Addtocart::with(['products','users'])->orderBy($columnName,$columnSortOrder)
                 // ->where('addtocarts.name', 'like', '%' .$searchValue . '%')
-                ->select('addtocarts.*')
+                ->select(['addtocarts.*','users.name','products.title'])
+                ->join('users','users.id','=','addtocarts.user_id')
+                ->join('products','products.id','=','addtocarts.product_id')
                 ->skip($start)
                 ->take($rowperpage)
                 ->get();
@@ -63,8 +65,8 @@ class OrderController extends Controller
         
                 $data_arr[] = array(
                     "id" => $id,
-                    "name" => $productname,
-                    "username" => $username,
+                    "title" => $productname,
+                    "name" => $username,
                     "quantity" => $quantity,
                     "action" => '<div class="d-flex"><a href="'.route('category.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a onclick="event.preventDefault();
                     document.getElementById(\'categorydelete-form\').submit();" class="btn btn-danger"><i class="fa fa-trash"></i></a></div><form id="categorydelete-form" action="'.route('category.destroy',$id) .'" method="POST" class="d-none">'.csrf_token().'<input type="hidden" name="_method" value="DELETE"></form>'
