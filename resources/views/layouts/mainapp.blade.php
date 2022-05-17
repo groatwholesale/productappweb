@@ -50,6 +50,11 @@
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Products</span></a>
             </li>
+            <li class="nav-item {{ request()->is(['order']) ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('order.index') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Orders</span></a>
+            </li>
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

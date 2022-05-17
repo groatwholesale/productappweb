@@ -12,4 +12,12 @@ class ProductsImage extends Model
     protected $table="products_image";
     protected $fillable=['file_name','product_id'];
     protected $hidden=['deleted_at'];
+    
+    public function getFileNameAttribute($value)
+    {
+        if(empty($value) || is_null($value)){
+            return "";
+        }
+        return asset("uploads/products/".$this->product_id)."/".$value;
+    }
 }

@@ -54,13 +54,12 @@
                 </div>
                 <div class="form-group">
                     <label for="">Products Images</label>
-                    <input type="file" name="images" class="form-control @error('description') is-invalid @enderror">
+                    <input type="file" name="images[]" class="form-control @error('description') is-invalid @enderror" multiple>
                     @error('images')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
-                    
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>

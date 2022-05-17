@@ -3,6 +3,7 @@
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
@@ -26,3 +27,5 @@ Route::resource('category', CategoryController::class)->except(['show']);
 Route::resource('products', ProductController::class)->except(['show']);
 Route::get('category/lists',[CategoryController::class,'lists'])->name('category.lists');
 Route::get('products/lists',[ProductController::class,'lists'])->name('products.lists');
+Route::get('orders',[OrderController::class,'index'])->name('order.index');
+Route::get('orders/lists',[OrderController::class,'lists'])->name('order.lists');

@@ -59,10 +59,12 @@ class CategoryController extends Controller
             foreach($records as $record){
                 $id = $record->id;
                 $name = $record->name;
+                $image = '<img src="'.$record->image.'" loading="lazy" width="70">';
         
                 $data_arr[] = array(
                     "id" => $id,
                     "name" => $name,
+                    "image" => $image,
                     "action" => '<div class="d-flex"><a href="'.route('category.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a onclick="event.preventDefault();
                     document.getElementById(\'categorydelete-form\').submit();" class="btn btn-danger"><i class="fa fa-trash"></i></a></div><form id="categorydelete-form" action="'.route('category.destroy',$id) .'" method="POST" class="d-none">'.csrf_token().'<input type="hidden" name="_method" value="DELETE"></form>'
                 );
@@ -107,9 +109,14 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         try{
+            $image = $request->file('image');
+            $imagename = time().'.'.$image->getClientOriginalExtension();
             $category = new Category;
             $category->name=$request->categoryname;
+            $category->image=$imagename;
             if($category->save()){
+                $destinationPath = public_path('/uploads/category/'.$category->id);
+                $image->move($destinationPath, $imagename);
                 return redirect()->route('category.index')->withSuccess("Category stored successfully.");
             }
         }
@@ -145,7 +152,18 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         try{
-            $category->update(['name'=>$request->categoryname]);
+            $data=[];
+            if($request->file('image')){
+                $image = $request->file('image');
+                $imagename = time().'.'.$image->getClientOriginalExtension();
+                $destinationPath = public_path('/uploads/category/'.$category->id);
+                $image->move($destinationPath, $imagename);
+                $data['image']=$imagename;
+            }
+            if(isset($data['name']) && !empty($data['name'])){
+                $data['name']=$request->categoryname;
+            }
+            $category->update($data);
             return redirect()->route('category.index')->withSuccess("Category updated successfully.");
         }
         catch(Exception $ex){

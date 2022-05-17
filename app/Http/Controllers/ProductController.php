@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\ProductsImage;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 
@@ -63,11 +64,9 @@ class ProductController extends Controller
                 $title = $record->title;
                 $price = $record->price;
                 $description = $record->description;
-                $image = "Image";
         
                 $data_arr[] = array(
                     "id" => $id,
-                    "image" => $image,
                     "title" => $title,
                     "price" => $price,
                     "description" => $description,
@@ -123,8 +122,13 @@ class ProductController extends Controller
             $product->price=$request->price;
             if($product->save()){
                 foreach($request->images as $file){
-                    $destinationpath=public_path("uploads/products/".$product->id)."/".
-                    $file->move();
+                    $imagename = time().'.'.$file->getClientOriginalExtension();
+                    $destinationPath = public_path('/uploads/products/'.$product->id);
+                    $file->move($destinationPath, $imagename);
+                    $product_images=new ProductsImage;
+                    $product_images->file_name=$imagename;
+                    $product_images->product_id=$product->id;
+                    $product_images->save();
                 }
                 return redirect()->route('products.index')->withSuccess("Product stored successfully.");
             }
@@ -177,6 +181,17 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         try{
+            if(!is_null($request->images)){
+                foreach($request->images as $file){
+                    $imagename = time().'.'.$file->getClientOriginalExtension();
+                    $destinationPath = public_path('/uploads/products/'.$product->id);
+                    $file->move($destinationPath, $imagename);
+                    $product_images=new ProductsImage;
+                    $product_images->file_name=$imagename;
+                    $product_images->product_id=$product->id;
+                    $product_images->save();
+                }
+            }
             $product->update(['title'=>$request->title,'description'=>$request->description,'price'=>$request->price,'category_id'=>$request->category]);
             return redirect()->route('products.index')->withSuccess("Products updated successfully.");
         }

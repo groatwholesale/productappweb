@@ -20,7 +20,7 @@
                 </div>
                 <div class="form-group">
                     <label for="">Category Image</label>
-                    <input type="file" name="image" value="{{ old('image') }}" class="form-control @error('image') is-invalid @enderror" placeholder="Enter Category Name">
+                    <input type="file" name="image" value="{{ old('image') }}" class="form-control @error('image') is-invalid @enderror">
                     @error('image')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>

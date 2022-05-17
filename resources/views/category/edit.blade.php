@@ -10,9 +10,20 @@
             <form action="{{ route('category.update',$category->id) }}" method="post" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
+                <input type="hidden" name="categoryid" value="{{$category->id}}">
                 <div class="form-group">
+                    <label for="">Category Name</label>
                     <input type="text" name="categoryname" value="{{ $category->name }}" class="form-control @error('categoryname') is-invalid @enderror" placeholder="Enter Category Name">
                     @error('categoryname')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="">Category Image</label>
+                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
+                    @error('image')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>

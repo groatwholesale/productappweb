@@ -18,6 +18,7 @@
                     <thead>
                       <tr>
                         <td>id</td>
+                        <td>Image</td>
                         <td>Name</td>
                         <td>Action</td>
                       </tr>
@@ -42,13 +43,15 @@
          ajax: "{{route('category.lists')}}",
          columns: [
             { data: 'id' },
+            { data: 'image' },
             { data: 'name' },
             { data: 'action' },
          ],
          columnDefs: [
             { targets: [0], visible: false,searchable: false},
-            { targets: [1], sortable: true,searchable: true},
-            { targets: [2], sortable: false,searchable: false},
+            { targets: [1], sortable: false,searchable: false},
+            { targets: [2], sortable: true,searchable: true},
+            { targets: [3], sortable: false,searchable: false},
         ]
       });
 
