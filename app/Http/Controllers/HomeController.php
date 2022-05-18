@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Addtocart;
 use Exception;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -29,9 +31,13 @@ class HomeController extends Controller
         try{
             $category=Category::count();
             $product=Product::count();
-            return view('home',compact('category','product'));
+            $user=User::count();
+            $completed_product=Addtocart::where('is_completed',1)->count();
+            $pending_product=Addtocart::where('is_completed',0)->count();
+            return view('home',compact('category','product','user','completed_product','pending_product'));
         }
         catch(Exception $ex){
+            return abort('404');
             return redirect()->route('login')->withError($ex->getMessage());
         }
     }

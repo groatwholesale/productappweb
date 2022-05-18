@@ -42,12 +42,12 @@
             </li>
             <li class="nav-item {{ request()->is(['category','category/*']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('category.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-list"></i>
                     <span>Category</span></a>
             </li>
             <li class="nav-item {{ request()->is(['products','products/*']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('products.index') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa fa-shopping-cart"></i>
                     <span>Products</span></a>
             </li>
             <li class="nav-item {{ request()->is(['orders']) ? 'active' : '' }}">
