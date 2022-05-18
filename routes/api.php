@@ -32,5 +32,7 @@ use App\Http\Controllers\api\CategoryController;
         Route::get('/products/{id}', [ProductController::class,'show']);
         Route::post('/addtocart', [ProductController::class,'addtocart']);
         Route::get('/getaddtocart_products', [ProductController::class,'getaddtocart_products']);
+        Route::post('/updatecartproducts', [ProductController::class,'updatecartproducts']);
+        Route::post('/deletecartproducts', [ProductController::class,'deletecartproducts']);
     });
 // });

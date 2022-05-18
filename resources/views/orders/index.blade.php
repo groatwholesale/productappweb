@@ -21,6 +21,19 @@
                         <td>Action</td>
                       </tr>
                     </thead>
+                    <tbody>
+                        @forelse ($records as $order)
+                        <tr>
+                            <td>{{$order->id}}</td>
+                            <td>{{$order->products->title}}</td>
+                            <td>{{$order->users->name}}</td>
+                            <td>{{$order->quantity}}</td>
+                            <td><button>Completed</button></td>
+                        </tr>
+                        @empty
+                            
+                        @endforelse
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -35,10 +48,10 @@
 
       $('#categoryTable').DataTable({
          processing: true,
-         serverSide: true,
+        //  serverSide: true,
          autoWidth: true,
          order: [[ 0, "desc" ]],
-         ajax: "{{route('order.lists')}}",
+        //  ajax: "{{route('order.lists')}}",
          columns: [
             { data: 'id' },
             { data: 'title',name:'products.title' },

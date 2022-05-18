@@ -18,6 +18,7 @@ class CreateAddtocartsTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('user_id');
             $table->integer('quantity');
+            $table->integer('is_completed')->default(0)->comment("1=completed,0=not completed");
             $table->timestamps();
             $table->softDeletes();
         });

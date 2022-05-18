@@ -16,7 +16,8 @@ class OrderController extends Controller
     public function index()
     {
         try{
-            return view('orders.index');
+            $records = Addtocart::with(['products','users'])->orderBy('id','desc')->get();
+            return view('orders.index',compact('records'));
         }
         catch(Exception $ex){
             return redirect()->route('home')->withError($ex->getMessage());
