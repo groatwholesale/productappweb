@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Addtocart;
+use App\Models\Order;
+use App\Models\Orderproduct;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -16,7 +18,7 @@ class OrderController extends Controller
     public function index()
     {
         try{
-            $records = Addtocart::with(['products','users'])->orderBy('id','desc')->get();
+            $records = Order::with(['users'])->orderBy('id','desc')->get();
             return view('orders.index',compact('records'));
         }
         catch(Exception $ex){
@@ -26,7 +28,7 @@ class OrderController extends Controller
 
     public function lists(Request $request)
     {
-        // try{
+        try{
             $draw = $request->get('draw');
             $start = $request->get("start");
             $rowperpage = $request->get("length"); // Rows display per page
@@ -83,9 +85,31 @@ class OrderController extends Controller
         
             echo json_encode($response);
             exit;
-        // }
-        // catch(Exception $ex){
-        //     return redirect()->route('order.index')->withError($ex->getMessage());
-        // }
+        }
+        catch(Exception $ex){
+            return redirect()->route('order.index')->withError($ex->getMessage());
+        }
+    }
+
+    public function show($id=null)
+    {
+        try{
+            $records = Orderproduct::with(['order','users','products'])->where('order_id',$id)->orderBy('id','desc')->get();
+            return view('orders.show',compact('records'));
+        }
+        catch(Exception $ex){
+            return redirect()->route('order.index')->withError($ex->getMessage());
+        }
+    }
+
+    public function complete_order(Request $request)
+    {
+        try{
+            Order::where('id',intval($request->orderid))->update(['status'=>1]);
+            return redirect()->route('order.index')->withSuccess("Order completed successfully");
+        }
+        catch(Exception $ex){
+            return redirect()->route('order.index')->withError($ex->getMessage());
+        }
     }
 }

@@ -120,20 +120,24 @@ class ProductController extends Controller
             $product->description=$request->description;
             $product->category_id=$request->category;
             $product->price=$request->price;
+            $product->is_product_top=isset($request->producttop) ? 1 :0;
             if($product->save()){
-                foreach($request->images as $file){
-                    $imagename = time().'.'.$file->getClientOriginalExtension();
-                    $destinationPath = public_path('/uploads/products/'.$product->id);
-                    $file->move($destinationPath, $imagename);
-                    $product_images=new ProductsImage;
-                    $product_images->file_name=$imagename;
-                    $product_images->product_id=$product->id;
-                    $product_images->save();
+                if(!is_null($request->images)){
+                    foreach($request->images as $file){
+                        $imagename = time().'.'.$file->getClientOriginalExtension();
+                        $destinationPath = public_path('/uploads/products/'.$product->id);
+                        $file->move($destinationPath, $imagename);
+                        $product_images=new ProductsImage;
+                        $product_images->file_name=$imagename;
+                        $product_images->product_id=$product->id;
+                        $product_images->save();
+                    }
                 }
                 return redirect()->route('products.index')->withSuccess("Product stored successfully.");
             }
         }
         catch(Exception $ex){
+            dd($ex->getMessage());
             return redirect()->route('products.index')->withError($ex->getMessage());
         }
     }
@@ -192,7 +196,7 @@ class ProductController extends Controller
                     $product_images->save();
                 }
             }
-            $product->update(['title'=>$request->title,'description'=>$request->description,'price'=>$request->price,'category_id'=>$request->category]);
+            $product->update(['title'=>$request->title,'description'=>$request->description,'price'=>$request->price,'category_id'=>$request->category,'is_product_top'=>intval($request->producttop)]);
             return redirect()->route('products.index')->withSuccess("Products updated successfully.");
         }
         catch(Exception $ex){
@@ -208,7 +212,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        dd("Sdf");
         try{
             if($product->delete()){
                 return redirect()->route('products.index')->withSuccess("Product deleted successfully.");
@@ -221,12 +224,13 @@ class ProductController extends Controller
 
     public function product_delete_image($id)
     {
-        dd($id);
         try{
             $productid=ProductsImage::where('id',$id)->first();
-            unlink("uploads/products/".$productid."/".$productid->file_name);
+            $singleproduct=$productid->product_id;
+            dd($productid->getOrignalAttribute('file_name'));
+            unlink("uploads/products/".$singleproduct."/".$productid->file_name);
             ProductsImage::where('id',$id)->delete();
-            return redirect()->route('products.index')->withSuccess("Product image deleted successfully.");
+            return redirect()->route('products.show',$singleproduct)->withSuccess("Product image deleted successfully.");
         }
         catch(Exception $ex){
             return redirect()->route('products.index')->withError($ex->getMessage());

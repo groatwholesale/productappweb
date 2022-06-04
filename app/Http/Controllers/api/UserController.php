@@ -98,6 +98,12 @@ class UserController extends Controller
             if(isset($request->gender) && !empty($request->gender)){
                 $user->gender=$request->gender;
             }
+            if(isset($request->address) && !empty($request->address)){
+                $user->address=$request->address;
+            }
+            if(isset($request->pincode) && !empty($request->pincode)){
+                $user->pincode=$request->pincode;
+            }
             $user->save();
             $response = ['user' => $user];
             return $this->successResponse($response,"Profile details updated Successfully");

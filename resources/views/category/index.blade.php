@@ -1,4 +1,5 @@
 @extends('layouts.mainapp')
+@section('title','Category')
 
 @section('style')
     <link rel="stylesheet" href="{{ asset('theme/datatables/dataTables.bootstrap4.min.css') }}">

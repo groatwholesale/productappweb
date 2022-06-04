@@ -1,5 +1,6 @@
 @extends('layouts.mainapp')
 
+@section('title','Orders')
 @section('style')
     <link rel="stylesheet" href="{{ asset('theme/datatables/dataTables.bootstrap4.min.css') }}">
 @endsection
@@ -14,10 +15,10 @@
                 <table class="table table-bordered" cellspacing="0" id='categoryTable' width='100%'>
                     <thead>
                       <tr>
-                        <td>id</td>
-                        <td>Product</td>
+                        <td>Order Id</td>
                         <td>Userame</td>
-                        <td>Quantity</td>
+                        <td>Total Price</td>
+                        <td>Stauts</td>
                         <td>Action</td>
                       </tr>
                     </thead>
@@ -25,10 +26,19 @@
                         @forelse ($records as $order)
                         <tr>
                             <td>{{$order->id}}</td>
-                            <td>{{$order->products->title}}</td>
                             <td>{{$order->users->name}}</td>
-                            <td>{{$order->quantity}}</td>
-                            <td><button>Completed</button></td>
+                            <td>{{$order->total_price}}</td>
+                            <td>{{$order->status==0?"Pending":"Completed"}}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <a href="{{ route('order.show',$order->id) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                                    <form action="{{ route('complete_order') }}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="orderid" value="{{$order->id}}">
+                                        <button type="submit" class="btn btn-primary" {{$order->status==0?"":"disabled"}}>Completed</button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                         @empty
                             
@@ -54,13 +64,13 @@
         //  ajax: "{{route('order.lists')}}",
          columns: [
             { data: 'id' },
-            { data: 'title',name:'products.title' },
             { data: 'name',name:'users.name' },
             { data: 'quantity' },
+            { data: 'status' },
             { data: 'action' },
          ],
          columnDefs: [
-            { targets: [0], visible: false,searchable: false},
+            { targets: [0], sortable: true,searchable: false},
             { targets: [1], sortable: true,searchable: true},
             { targets: [2], sortable: true,searchable: true},
             { targets: [3], sortable: true,searchable: true},

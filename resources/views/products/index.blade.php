@@ -1,5 +1,6 @@
 @extends('layouts.mainapp')
 
+@section('title','Products')
 @section('style')
     <link rel="stylesheet" href="{{ asset('theme/datatables/dataTables.bootstrap4.min.css') }}">
 @endsection

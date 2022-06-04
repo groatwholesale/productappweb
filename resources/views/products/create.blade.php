@@ -1,5 +1,6 @@
 @extends('layouts.mainapp')
 
+@section('title','Create Product')
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Add Products</h1>
@@ -9,6 +10,10 @@
         <div class="card-body">
             <form action="{{ route('products.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
+                <div class="form-group">
+                    <label for="producttop">Products Top</label>
+                    <input type="checkbox" name="producttop" id="producttop" @if(old('producttop')==1) checked @endif value="1">
+                </div>
                 <div class="form-group">
                     <label for="">Products Category</label>
                     <select name="category" class="form-control @error('category') is-invalid @enderror">

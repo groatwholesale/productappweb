@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title','Laravel')</title>
 
     <!-- Styles -->
     <link href="{{asset('theme/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -50,10 +50,15 @@
                     <i class="fas fa-fw fa fa-shopping-cart"></i>
                     <span>Products</span></a>
             </li>
-            <li class="nav-item {{ request()->is(['orders']) ? 'active' : '' }}">
+            <li class="nav-item {{ request()->is(['orders','orders/*']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('order.index') }}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Orders</span></a>
+            </li>
+            <li class="nav-item {{ request()->is(['banners']) ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('banners.index') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Banners</span></a>
             </li>
 
             <!-- Sidebar Toggler (Sidebar) -->

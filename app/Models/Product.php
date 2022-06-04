@@ -10,8 +10,8 @@ class Product extends Model
 {
     use HasFactory,SoftDeletes;
     protected $table = "products";
-    protected $fillable = ['title','description','category_id'];
-    protected $hidden = ['deleted_at'];
+    protected $fillable = ['title','description','category_id','is_product_top'];
+    protected $hidden = ['updated_at','deleted_at'];
 
     public function attachments()
     {

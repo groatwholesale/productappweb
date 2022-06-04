@@ -1,5 +1,6 @@
 @extends('layouts.mainapp')
 
+@section('title','Edit Product')
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Edit Products</h1>
@@ -10,6 +11,10 @@
             <form action="{{ route('products.update',$product->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <div class="form-group">
+                    <label for="producttop">Products Top</label>
+                    <input type="checkbox" name="producttop" id="producttop" @if($product->is_product_top==1) checked @endif value="1">
+                </div>
                 <div class="form-group">
                     <label for="">Products Title</label>
                     <input type="text" name="title" value="{{ $product->title }}" class="form-control @error('title') is-invalid @enderror" placeholder="Enter Products Title">
@@ -63,19 +68,12 @@
                     @enderror
                 </div>
                 <div class="row">
-                    @forelse ($product->attachments as $image)
+                    @foreach ($product->attachments as $image)
                         <div class="col-3">
                             <img src="{{$image->file_name}}" width="100">
-                            {{-- @dd(route('productimage.delete',$image->id)); --}}
-                            <form action="{{ route('productimage.delete',$image->id) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit">Delete</button>
-                            </form>
+                            <a href="{{ route('productimage.delete',$image->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                         </div>
-                    @empty
-                        <p>No images found</p>                        
-                    @endforelse
+                    @endforeach
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
