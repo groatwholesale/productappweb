@@ -70,8 +70,7 @@ class ProductController extends Controller
                     "title" => $title,
                     "price" => $price,
                     "description" => $description,
-                    "action" => '<div class="d-flex"><a href="'.route('products.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a onclick="event.preventDefault();
-                    document.getElementById(\'productsdelete-form\').submit();" class="btn btn-danger"><i class="fa fa-trash"></i></a></div><form id="productsdelete-form" action="'.route('products.destroy',$id) .'" method="POST" class="d-none">'.csrf_token().'<input type="hidden" name="_method" value="DELETE"></form>'
+                    "action" => '<div class="d-flex"><a href="'.route('products.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a href="'.route('products.delete',$id).'" class="btn btn-danger"><i class="fa fa-trash"></i></a></div>'
                 );
             }
         
@@ -123,8 +122,8 @@ class ProductController extends Controller
             $product->is_product_top=isset($request->producttop) ? 1 :0;
             if($product->save()){
                 if(!is_null($request->images)){
-                    foreach($request->images as $file){
-                        $imagename = time().'.'.$file->getClientOriginalExtension();
+                    foreach($request->images as $index=>$file){
+                        $imagename = $index.time().'.'.$file->getClientOriginalExtension();
                         $destinationPath = public_path('/uploads/products/'.$product->id);
                         $file->move($destinationPath, $imagename);
                         $product_images=new ProductsImage;
@@ -186,8 +185,8 @@ class ProductController extends Controller
     {
         try{
             if(!is_null($request->images)){
-                foreach($request->images as $file){
-                    $imagename = time().'.'.$file->getClientOriginalExtension();
+                foreach($request->images as $index=>$file){
+                    $imagename = $index.time().'.'.$file->getClientOriginalExtension();
                     $destinationPath = public_path('/uploads/products/'.$product->id);
                     $file->move($destinationPath, $imagename);
                     $product_images=new ProductsImage;
@@ -210,10 +209,11 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id=null)
     {
         try{
-            if($product->delete()){
+            if(Product::where('id',$id)->delete()){
+                ProductsImage::where('product_id',$id)->delete();
                 return redirect()->route('products.index')->withSuccess("Product deleted successfully.");
             }
         }
@@ -227,10 +227,9 @@ class ProductController extends Controller
         try{
             $productid=ProductsImage::where('id',$id)->first();
             $singleproduct=$productid->product_id;
-            dd($productid->getOrignalAttribute('file_name'));
-            unlink("uploads/products/".$singleproduct."/".$productid->file_name);
+            @unlink(public_path("uploads/products/".$singleproduct."/".$productid->getRawOriginal('file_name')));
             ProductsImage::where('id',$id)->delete();
-            return redirect()->route('products.show',$singleproduct)->withSuccess("Product image deleted successfully.");
+            return redirect()->route('products.edit',$id)->withSuccess("Product image deleted successfully.");
         }
         catch(Exception $ex){
             return redirect()->route('products.index')->withError($ex->getMessage());

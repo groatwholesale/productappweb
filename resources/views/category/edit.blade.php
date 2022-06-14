@@ -29,6 +29,7 @@
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
+                    <img src="{{ $category->image }}" style="width: 200px">
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
