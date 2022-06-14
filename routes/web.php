@@ -24,7 +24,8 @@ Route::redirect('/','login');
 Auth::routes(['register'=>false]);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::resource('category', CategoryController::class)->except(['show']);
+Route::resource('category', CategoryController::class)->except(['show','destroy']);
+Route::get('category/delete/{id}',[CategoryController::class,'destroy'])->name('category.delete');
 Route::resource('banners', BannerController::class)->except(['show']);
 Route::resource('products', ProductController::class)->except(['show']);
 Route::get('category/lists',[CategoryController::class,'lists'])->name('category.lists');

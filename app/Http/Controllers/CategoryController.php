@@ -65,8 +65,7 @@ class CategoryController extends Controller
                     "id" => $id,
                     "name" => $name,
                     "image" => $image,
-                    "action" => '<div class="d-flex"><a href="'.route('category.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a onclick="event.preventDefault();
-                    document.getElementById(\'categorydelete-form\').submit();" class="btn btn-danger"><i class="fa fa-trash"></i></a></div><form id="categorydelete-form" action="'.route('category.destroy',$id) .'" method="POST" class="d-none">'.csrf_token().'<input type="hidden" name="_method" value="DELETE"></form>'
+                    "action" => '<div class="d-flex"><a href="'.route('category.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a href="'.route('category.delete',$id).'" class="btn btn-danger"><i class="fa fa-trash"></i></a></div>'
                 );
             }
         
@@ -177,10 +176,10 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy($id=null)
     {
         try{
-            if($category->delete()){
+            if(Category::where('id',$id)->delete()){
                 return redirect()->route('category.index')->withSuccess("Category deleted successfully.");
             }
         }
