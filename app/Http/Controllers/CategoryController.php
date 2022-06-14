@@ -179,6 +179,11 @@ class CategoryController extends Controller
     public function destroy($id=null)
     {
         try{
+
+            $productcount=Category::has('products')->where('id',$id)->count();
+            if($productcount==0){
+                return redirect()->route('category.index')->withError("Category already added into product.");
+            }
             if(Category::where('id',$id)->delete()){
                 return redirect()->route('category.index')->withSuccess("Category deleted successfully.");
             }

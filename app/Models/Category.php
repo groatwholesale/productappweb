@@ -20,4 +20,8 @@ class Category extends Model
         }
         return asset("uploads/category/".$this->id)."/".$value;
     }
+    public function products()
+    {
+        return $this->belongsTo(Product::class,'id','category_id');
+    }
 }

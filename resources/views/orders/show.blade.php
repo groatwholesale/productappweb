@@ -10,7 +10,7 @@
     </div>
     <div class="card shadow mb-4">
         <div class="card-body">
-            @foreach ($records as $record)
+            @forelse ($records as $record)
                 <div class="mt-3 row border">
                     <div>
                         Product :
@@ -19,8 +19,16 @@
                         <div>Price : {{$record->price}}</div>
                     </div>
                 </div>
-            @endforeach
-            Total Price : {{$record->order->total_price}}
+            @empty
+                <div class="mt-3 row justify-content-center">
+                    <div>
+                        <h3>No Records found</h3>
+                    </div>
+                </div>
+            @endforelse
+            @if (isset($record))
+                Total Price : {{$record->order->total_price}}
+            @endif
         </div>
     </div>
 @endsection

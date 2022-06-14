@@ -12,6 +12,7 @@
     <!-- Styles -->
     <link href="{{asset('theme/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset('theme/css/sb-admin-2.min.css')}}" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @yield('style')
 </head>
 
@@ -173,15 +174,16 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('theme/js/sb-admin-2.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
-
+        toastr.options ={"closeButton" : true,"progressBar" : true};
         var success = "{{ Session::get('success')}}";
         var error = "{{ Session::get('error')}}";
         if (success) {
-            // showAlert("success", success);
+            toastr.success("{{ session('success') }}");
         }
         if (error) {
-            // showAlert("danger", error);
+            toastr.error("{{ session('error') }}");
         }
     </script>
     @yield('scripts')
