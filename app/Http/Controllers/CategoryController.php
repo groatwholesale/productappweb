@@ -159,7 +159,7 @@ class CategoryController extends Controller
                 $image->move($destinationPath, $imagename);
                 $data['image']=$imagename;
             }
-            if(isset($data['name']) && !empty($data['name'])){
+            if(isset($request->categoryname) && !empty($request->categoryname)){
                 $data['name']=$request->categoryname;
             }
             $category->update($data);

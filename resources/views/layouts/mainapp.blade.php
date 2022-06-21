@@ -41,6 +41,11 @@
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
+            <li class="nav-item {{ request()->is(['users','users/*']) ? 'active' : '' }}">
+                <a class="nav-link" href="{{route('users.index')}}">
+                    <i class="fas fa-fw fa-user-alt"></i>
+                    <span>Users</span></a>
+            </li>
             <li class="nav-item {{ request()->is(['category','category/*']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('category.index') }}">
                     <i class="fas fa-fw fa-list"></i>

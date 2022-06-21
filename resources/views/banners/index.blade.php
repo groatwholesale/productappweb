@@ -2,8 +2,6 @@
 
 @section('title','Banners')
 @section('style')
-    <link rel="stylesheet" href="{{ asset('theme/datatables/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"/>
     <style>
         #dragimage div{
             width:100px;
@@ -31,10 +29,13 @@
             </div>
             <div id="txtresponse" > </div>
             <ul id="image-list" >
-                @foreach ($banner as $images)
+                {{-- @foreach ($banner as $images)
                     <li id="image_{{$images->id}}"> <img src="{{$images->image}}" style="width:100px"> </li>
-                @endforeach
+                @endforeach --}}
             </ul>
+
+
+            <input type="file" id="input-100" name="input-100[]" accept="image/*" multiple>
 
        
             <div id="submit-container"> 
@@ -47,37 +48,9 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" ></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var dropIndex;
-        $("#image-list").sortable({
-            	update: function(event, ui) { 
-            		dropIndex = ui.item.index();
-            }
-        });
-
-        $('#submit').click(function (e) {
-            var imageIdsArray = [];
-            $('#image-list li').each(function (index) {
-                if(index <= dropIndex) {
-                    var id = $(this).attr('id');
-                    var split_id = id.split("_");
-                    imageIdsArray.push(split_id[1]);
-                }
-            });
-
-            $.ajax({
-                url: "{{ route('banner.uploadimage') }}",
-                type: 'post',
-                data: {imageIds: imageIdsArray,_token:"{{csrf_token()}}"},
-                success: function (response) {
-                   $("#txtresponse").css('display', 'inline-block'); 
-                   $("#txtresponse").text(response);
-                }
-            });
-            e.preventDefault();
-        });
+    
     });
-    </script>
+</script>
 @endsection

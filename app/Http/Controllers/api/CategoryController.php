@@ -14,7 +14,7 @@ class CategoryController extends Controller
     public function index()
     {
         try{
-            $category = Category::orderBy('id','desc')->select('id','name','image')->paginate(10);
+            $category = Category::orderBy('id','desc')->select('id','name','image')->get();
             return $this->successResponse($category,"Category retrieved Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);

@@ -30,7 +30,7 @@ class UserController extends Controller
                 $user->role_id=0;
                 $user->save();
                 // $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-                $response = ['token' => $user];
+                $response = ['user' => $user];
             } else {
                 $user=new User;
                 $user->phonenumber=$request->phonenumber;
@@ -38,7 +38,7 @@ class UserController extends Controller
                 $user->role_id=0;
                 $user->save();
                 // $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-                $response = ["token" => $user];
+                $response = ["user" => $user];
             }
             return $this->successResponse($response,"Login Successfully");
         }catch(Exception $ex){
