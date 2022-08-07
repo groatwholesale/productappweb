@@ -20,7 +20,8 @@ class ProductController extends Controller
     public function index()
     {
         try{
-            return view('products.index');
+            $category=Category::orderBy('name','asc')->select('id','name')->get();
+            return view('products.index',compact('category'));
         }
         catch(Exception $ex){
             return redirect()->route('home')->withError($ex->getMessage());
@@ -29,7 +30,7 @@ class ProductController extends Controller
     
     public function lists(Request $request)
     {
-        try{
+        // try{
             $draw = $request->get('draw');
             $start = $request->get("start");
             $rowperpage = $request->get("length"); // Rows display per page
@@ -43,15 +44,27 @@ class ProductController extends Controller
             $columnName = $columnName_arr[$columnIndex]['data']; // Column name
             $columnSortOrder = $order_arr[0]['dir']; // asc or desc
             $searchValue = $search_arr['value']; // Search value
-        
+            $category_id=$request->has('category_id') ? $request->category_id : null;
             // Total records
             $totalRecords = Product::select('count(*) as allcount')->count();
-            $totalRecordswithFilter = Product::select('count(*) as allcount')->where('title', 'like', '%' .$searchValue . '%')->orWhere('description', 'like', '%' .$searchValue . '%')->count();
+            $totalRecordswithFilter = Product::select('count(*) as allcount')
+            ->where(function($query) use($searchValue){
+                $query->where('title', 'like', '%' .$searchValue . '%')->orWhere('description', 'like', '%' .$searchValue . '%');
+            })
+            ->when(!is_null($category_id), function($query) use($category_id){
+                $query->where('category_id',$category_id);
+            })
+            ->count();
         
             // Fetch records
-            $records = Product::orderBy($columnName,$columnSortOrder)
-            ->where('products.title', 'like', '%' .$searchValue . '%')
-            ->orWhere('products.description', 'like', '%' .$searchValue . '%')
+            $records = Product::with('category')->orderBy($columnName,$columnSortOrder)
+            ->where(function($query) use($searchValue){
+                $query->where('products.title', 'like', '%' .$searchValue . '%')
+                ->orWhere('products.description', 'like', '%' .$searchValue . '%');
+            })
+            ->when(!is_null($category_id), function($query) use($category_id){
+                $query->where('category_id',$category_id);
+            })
             ->select('products.*')
                 ->skip($start)
                 ->take($rowperpage)
@@ -64,11 +77,12 @@ class ProductController extends Controller
                 $title = $record->title;
                 $price = $record->price;
                 $description = $record->description;
-        
+                $category = is_null($record->category) ? "---" : $record->category->name ;
                 $data_arr[] = array(
                     "id" => $id,
                     "title" => $title,
                     "price" => $price,
+                    "category" => $category,
                     "description" => $description,
                     "action" => '<div class="d-flex"><a href="'.route('products.edit',$id).'" class="btn btn-info"><i class="fa fa-edit"></i></a><a href="'.route('products.delete',$id).'" class="btn btn-danger"><i class="fa fa-trash"></i></a></div>'
                 );
@@ -83,10 +97,10 @@ class ProductController extends Controller
         
             echo json_encode($response);
             exit;
-        }
-        catch(Exception $ex){
-            return redirect()->route('products.index')->withError($ex->getMessage());
-        }
+        // }
+        // catch(Exception $ex){
+        //     return redirect()->route('products.index')->withError($ex->getMessage());
+        // }
     }
 
     /**
