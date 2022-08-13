@@ -16,13 +16,17 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     use ApiResponser;
-    public function index()
+    public function index(Request $request)
     {
         try{
-            $search = request()->get('search');
+            $search =$request->has('search') ? $request->search : null;
+            $category_id=$request->has('category_id') ? $request->category_id : null;
             $product = Product::with('attachments:id,file_name,product_id')->orderBy('id','desc')->select('id','title','description','price')
             ->when(!is_null($search),function($query) use($search){
                 $query->where('title','like','%'.$search.'%');
+            })
+            ->when(!is_null($category_id), function ($query) use($category_id){
+                $query->where('category_id',$category_id);
             })
             ->paginate(10);            
             return $this->successResponse($product,"Product retrieved Successfully");
