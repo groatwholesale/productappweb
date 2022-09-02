@@ -16,7 +16,7 @@ class ProductsImage extends Model
     public function getFileNameAttribute($value)
     {
         if(empty($value) || is_null($value)){
-            return "";
+            return asset("index.jpg");
         }
         return asset("uploads/products/".$this->product_id)."/".$value;
     }

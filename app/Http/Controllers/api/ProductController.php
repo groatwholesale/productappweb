@@ -28,7 +28,9 @@ class ProductController extends Controller
             ->when(!is_null($category_id), function ($query) use($category_id){
                 $query->where('category_id',$category_id);
             })
-            ->paginate(10);            
+            ->paginate(10)->toArray();
+            $product['products']=$product['data'];
+            unset($product['data']);
             return $this->successResponse($product,"Product retrieved Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
