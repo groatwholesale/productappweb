@@ -2,14 +2,46 @@
 
 @section('title','Banners')
 @section('style')
-    <style>
-        #dragimage div{
-            width:100px;
-            height:100px;
-            background: rebeccapurple;
-            margin: 10px;
+  <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+  <style>
+       /* image dimension */
+       img{
+            height: 200px;
+            width: 350px;
         }
-    </style>
+  
+        /* imagelistId styling */
+        #imageListId
+        { 
+        margin: 0; 
+        padding: 0;
+        list-style-type: none;
+        }
+        #imageListId div
+        { 
+            margin: 0 4px 4px 4px;
+            padding: 0.4em;             
+            display: inline-block;
+        }
+  
+        /* Output order styling */
+        #outputvalues{
+        margin: 0 2px 2px 2px;
+        padding: 0.4em; 
+        padding-left: 1.5em;
+        width: 250px;
+        border: 2px solid dark-green; 
+        background : gray;
+        }
+        .listitemClass 
+        {
+            border: 1px solid #006400; 
+            width: 350px;     
+        }
+        .height{ 
+            height: 10px;
+        }
+  </style>
 @endsection
 
 @section('content')
@@ -22,25 +54,25 @@
         <div class="card-body">
            <div class="row">
             
-            <div class="col-md-3" id="dragimage" style="width:200px;height:200px;">
-
-
-
+            <div id = "imageListId">
+              @foreach ($banners as $index=>$banner)
+                <div id="imageNo{{++$index}}" data-id="{{$banner->id}}" class = "listitemClass">
+                    <img src="{{$banner->image}}" alt="image">
+                </div>
+              @endforeach
             </div>
-            <div id="txtresponse" > </div>
-            <ul id="image-list" >
-                {{-- @foreach ($banner as $images)
-                    <li id="image_{{$images->id}}"> <img src="{{$images->image}}" style="width:100px"> </li>
-                @endforeach --}}
-            </ul>
 
+            <div class="row">
+              <div class="col-md-12">
 
-            <input type="file" id="input-100" name="input-100[]" accept="image/*" multiple>
-
-       
-            <div id="submit-container"> 
-                <input type='button' class="btn-submit" value='Submit' id='submit' />
+                <form action="{{ route('banners.store') }}" id="bannerform" method="post" enctype="multipart/form-data">
+                  @csrf
+                  <input type="file" name="images[]" multiple>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+              </div>
             </div>
+
            </div>
            
         </div>
@@ -48,9 +80,55 @@
 @endsection
 
 @section('scripts')
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
-    
-    });
+ 
+            $( "#imageListId" ).sortable({
+            update: function(event, ui) {
+                getIdsOfImages();
+            }//end update         
+            });
+ 
+            $(document).on('submit','#bannerform',function(e){
+              e.preventDefault();
+              $.ajax({
+                type: "post",
+                url: "{{route('banners.store')}}",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function (response) {
+                    if(response.status){
+                      toastr.success("Image uploaded successfully.");
+                      location.reload();
+                    }
+                }
+              });
+            })
+            
+        function getIdsOfImages() {
+            var values = [];
+            $('.listitemClass').each(function (index) {
+              // console.log($(this).attr('data-id'));
+                values.push({
+                  id:$(this).attr('data-id'),
+                  order:$(this).attr("id").replace("imageNo", "")
+                });
+            });
+            $.ajax({
+              type: "post",
+              url: "{{route('banner.uploadimage')}}",
+              data: {order:values,'_token':"{{csrf_token()}}"},
+              dataType: "json",
+              success: function (response) {
+                if(response.status){
+                  toastr.success("Image reorder successfully.");
+                  // location.reload();
+                }
+              }
+            });
+        }
 </script>
 @endsection

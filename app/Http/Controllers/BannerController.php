@@ -14,8 +14,8 @@ class BannerController extends Controller
      */
     public function index()
     {
-        $banner=Banner::orderBy('step','asc')->get();
-        return view('banners.index',compact('banner'));
+        $banners=Banner::orderBy('step','asc')->get();
+        return view('banners.index',compact('banners'));
     }
 
     /**
@@ -36,13 +36,13 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        foreach($request->images as $file){
-            $imagename = time().'.'.$file->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads/banners/');
+        foreach($request->images as $index=>$file){
+            $imagename = $index.time().'.'.$file->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/banner/');
             $file->move($destinationPath, $imagename);
             $stepLast=Banner::orderBy('step','desc')->first();
             if(is_null($stepLast)){
-                $count=0;
+                $count=1;
             }
             else{
                 $count=$stepLast->step+1;
@@ -52,6 +52,7 @@ class BannerController extends Controller
             $product_images->step=$count;
             $product_images->save();
         }
+        return response()->json(['status'=>true]);
     }
 
     /**
@@ -96,6 +97,21 @@ class BannerController extends Controller
      */
     public function destroy(Banner $banner)
     {
-        //
+        $banner->delete();
+        return response()->json(['status'=>true]);
+    }
+
+    public function uploadimage(Request $request)
+    {
+        $orders=$request->order;
+        // dd($orders);
+        $banners=Banner::orderBy('id','asc')->select('id','step')->get();
+        $count=1;
+        foreach($orders as $index=>$banner){
+            // dd($banner);
+            Banner::where(['id'=>$banners[$index]])->update(['step'=>$banner['order']]);
+            $count++;
+        }        
+        return response()->json(['status'=>true]);
     }
 }

@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function index()
     {
         try{
-            $category=Category::orderBy('name','asc')->select('id','name')->get();
+            $category=Category::has('products')->orderBy('name','asc')->select('id','name')->get();
             return view('products.index',compact('category'));
         }
         catch(Exception $ex){
@@ -30,7 +30,7 @@ class ProductController extends Controller
     
     public function lists(Request $request)
     {
-        // try{
+        try{
             $draw = $request->get('draw');
             $start = $request->get("start");
             $rowperpage = $request->get("length"); // Rows display per page
@@ -97,10 +97,10 @@ class ProductController extends Controller
         
             echo json_encode($response);
             exit;
-        // }
-        // catch(Exception $ex){
-        //     return redirect()->route('products.index')->withError($ex->getMessage());
-        // }
+        }
+        catch(Exception $ex){
+            return redirect()->route('products.index')->withError($ex->getMessage());
+        }
     }
 
     /**
