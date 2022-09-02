@@ -28,7 +28,7 @@ use App\Http\Controllers\api\CategoryController;
         Route::post('/update_profile', [UserController::class,'update_profile'])->name('update_profile.api');
         Route::post('/logout', [UserController::class,'logout'])->name('logout.api');
         Route::get('/category', [CategoryController::class,'index']);
-        Route::get('/products', [ProductController::class,'index']);
+        Route::post('/products', [ProductController::class,'index']);
         Route::get('/topproduct', [ProductController::class,'topproduct']);
         Route::get('/products/{id}', [ProductController::class,'show']);
         Route::post('/addtocart', [ProductController::class,'addtocart']);

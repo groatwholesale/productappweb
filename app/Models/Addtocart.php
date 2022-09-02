@@ -10,6 +10,7 @@ class Addtocart extends Model
 {
     use HasFactory,SoftDeletes;
     protected $table="addtocarts";
+    protected $fillable=['user_id','product_id','quantity'];
     protected $hidden=['deleted_at','updated_at'];
 
     public function products()

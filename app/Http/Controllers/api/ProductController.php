@@ -50,8 +50,18 @@ class ProductController extends Controller
     public function getaddtocart_products()
     {
         try{
-            $carts=Addtocart::where('user_id',Auth::user()->id)->orderBy('id','desc')->get();
-            return $this->successResponse($carts,"Add to cart Product retrieved Successfully");
+            $carts=Addtocart::with(['products'])->where('user_id',Auth::user()->id)->orderBy('id','desc')->get();
+            $total_price=0;
+            foreach($carts as $cart){
+                $product_price=$cart->products->price;
+                $cart_price=$product_price*$cart->quantity;
+                $total_price+=$cart_price;
+            }
+            $cart_count=$carts->count();
+            $response['total_price']=$total_price;
+            $response['cart_count']=$cart_count;
+            $response['carts']=$carts;
+            return $this->successResponse($response,"Add to cart Product retrieved Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
         }
@@ -70,14 +80,15 @@ class ProductController extends Controller
             $products=json_decode($request->products,true);
             if(count($products)>0){
                 foreach($products as $product){
-                    $cart=new Addtocart;
-                    $cart->user_id=Auth::user()->id;
-                    $cart->product_id=$product['productid'];
-                    $cart->quantity=$product['quantity'];
-                    $cart->save();
+                    Addtocart::updateOrCreate(['user_id'=>Auth::user()->id,'product_id'=>$product['productid']],['user_id'=>Auth::user()->id,'product_id'=>$product['productid'],'quantity'=>$product['quantity']]);
+                    // $cart=new Addtocart;
+                    // $cart->user_id=Auth::user()->id;
+                    // $cart->product_id=$product['productid'];
+                    // $cart->quantity=$product['quantity'];
+                    // $cart->save();
                 }
             }
-            return $this->successResponse($request->all(),"Product add to carted Successfully");
+            return $this->successResponse([],"Product add to carted Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
         }
@@ -95,7 +106,7 @@ class ProductController extends Controller
                 return $this->errorResponse(['errors'=>$validator->errors()], 422);
             }
             Addtocart::where(['id'=>$request->order_id])->update(['quantity'=>$request->quantity]);
-            return $this->successResponse($request->all(),"Update add to cart product Successfully");
+            return $this->successResponse([],"Update add to cart product Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
         }
