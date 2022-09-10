@@ -148,7 +148,7 @@ class ProductController extends Controller
     public function getbuyproduct()
     {
         try{
-            $product = Order::with('orderproducts.products')->get();
+            $product = Order::with('orderproducts.products.attachments')->get();
             return $this->successResponse($product,"Get Buy Products retrieved Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
@@ -173,13 +173,16 @@ class ProductController extends Controller
                 $order->user_id=Auth::user()->id;
                 $order->save();
                 foreach($products as $product){
+                    $cartlists=Addtocart::with('products')->where(['id'=>$product['cart_id']])->first();
                     $cart=new Orderproduct();
                     $cart->user_id=Auth::user()->id;
-                    $cart->product_id=$product['productid'];
+                    $cart->product_id=$cartlists->product_id;
                     $cart->order_id=$order->id;
-                    $cart->quantity=$product['quantity'];
-                    $cart->price=$product['price'];
+                    $cart->quantity=$cartlists->quantity;
+                    $cart->price=$cartlists->products->price;
                     $cart->save();
+
+                    $cartlists->delete();
                 }
             }
             return $this->successResponse($request->all(),"Order added Successfully");
