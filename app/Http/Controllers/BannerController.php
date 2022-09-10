@@ -98,7 +98,7 @@ class BannerController extends Controller
     public function destroy(Banner $banner)
     {
         $banner->delete();
-        return response()->json(['status'=>true]);
+        return redirect()->route('banners.index');
     }
 
     public function uploadimage(Request $request)

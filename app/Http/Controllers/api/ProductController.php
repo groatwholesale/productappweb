@@ -8,6 +8,7 @@ use App\Models\Addtocart;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Order;
 use App\Models\Orderproduct;
 use Illuminate\Support\Facades\Auth;
@@ -50,14 +51,19 @@ class ProductController extends Controller
     public function getaddtocart_products()
     {
         try{
-            $carts=Addtocart::with(['products'])->where('user_id',Auth::user()->id)->orderBy('id','desc')->get();
+            $carts=Addtocart::with(['products.attachments'])->has('products')->where('user_id',Auth::user()->id)->orderBy('id','desc')->get()->toArray();
             $total_price=0;
+            $response=[];
+            $carts_data=[];
             foreach($carts as $cart){
-                $product_price=$cart->products->price;
-                $cart_price=$product_price*$cart->quantity;
+                $product_price=$cart['products']['price'] ?? 0;
+                $cart_price=$product_price*$cart['quantity'] ?? 0;
                 $total_price+=$cart_price;
+                array_push($carts_data,$cart['products']);
+                array_push($carts_data,$cart['quantity']);
+                // $response['']=$cart->products;
             }
-            $cart_count=$carts->count();
+            $cart_count=count($carts);
             $response['total_price']=$total_price;
             $response['cart_count']=$cart_count;
             $response['carts']=$carts;
@@ -177,6 +183,16 @@ class ProductController extends Controller
                 }
             }
             return $this->successResponse($request->all(),"Order added Successfully");
+        }catch(Exception $ex){
+            return $this->errorResponse($ex->getMessage(), 422);
+        }
+    }
+
+    public function banner()
+    {
+        try{
+            $banners=Banner::orderBy('step','asc')->get();
+            return $this->successResponse($banners,"Banner retrieved Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
         }

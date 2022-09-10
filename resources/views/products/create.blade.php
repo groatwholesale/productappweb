@@ -50,7 +50,7 @@
                 </div>
                 <div class="form-group">
                     <label for="">Products Price</label>
-                    <input type="number" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Enter Products Price">
+                    <input type="text" name="price" value="{{ old('price') }}" class="form-control @error('price') is-invalid @enderror" placeholder="Enter Products Price">
                     @error('price')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>

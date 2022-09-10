@@ -37,5 +37,6 @@ use App\Http\Controllers\api\CategoryController;
         Route::post('/deletecartproducts', [ProductController::class,'deletecartproducts']);
         Route::post('/addorders', [ProductController::class,'buyproduct']);
         Route::get('/getorders', [ProductController::class,'getbuyproduct']);
+        Route::get('/getbanners', [ProductController::class,'banner']);
     });
 // });

@@ -35,8 +35,13 @@
         }
         .listitemClass 
         {
+          position: relative;
             border: 1px solid #006400; 
             width: 350px;     
+        }
+        .listitemClass img{
+          width: 100%;
+          height: 100%;
         }
         .height{ 
             height: 10px;
@@ -57,6 +62,11 @@
             <div id = "imageListId">
               @foreach ($banners as $index=>$banner)
                 <div id="imageNo{{++$index}}" data-id="{{$banner->id}}" class = "listitemClass">
+                  <form method="post" action="{{ route('banners.destroy',$banner->id) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger float-right" style="position: absolute;right:0"><i class="fa fa-trash"></i></button>
+                  </form>
                     <img src="{{$banner->image}}" alt="image">
                 </div>
               @endforeach
