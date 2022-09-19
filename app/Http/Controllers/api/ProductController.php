@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Order;
+use App\Models\OrderAddressDetails;
 use App\Models\Orderproduct;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -172,6 +173,10 @@ class ProductController extends Controller
                 $order->total_price=$request->total_price;
                 $order->user_id=Auth::user()->id;
                 $order->save();
+                $address=new OrderAddressDetails;
+                $address->order_id=$order->id;
+                $address->address_details=isset($request->address) && !empty($request->address) ? $request->address : "---" ;
+                $address->save();
                 foreach($products as $product){
                     $cartlists=Addtocart::with('products')->where(['id'=>$product['cart_id']])->first();
                     $cart=new Orderproduct();

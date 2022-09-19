@@ -26,4 +26,9 @@ class Order extends Model
     {
         return $this->hasMany(Orderproduct::class,'order_id','id');
     }
+    
+    public function address()
+    {
+        return $this->hasOne(OrderAddressDetails::class);
+    }
 }

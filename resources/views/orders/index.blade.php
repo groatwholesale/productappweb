@@ -17,6 +17,7 @@
                       <tr>
                         <td>Order Id</td>
                         <td>Userame</td>
+                        <td>Address</td>
                         <td>Total Price</td>
                         <td>Stauts</td>
                         <td>Action</td>
@@ -27,6 +28,7 @@
                         <tr>
                             <td>{{$order->id}}</td>
                             <td>{{$order->users->name}}</td>
+                            <td>{{is_null($order->address) ? "----" :$order->address->address_details}}</td>
                             <td>{{$order->total_price}}</td>
                             <td>{{$order->status==0?"Pending":"Completed"}}</td>
                             <td>
