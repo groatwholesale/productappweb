@@ -38,5 +38,6 @@ use App\Http\Controllers\api\CategoryController;
         Route::post('/addorders', [ProductController::class,'buyproduct']);
         Route::get('/getorders', [ProductController::class,'getbuyproduct']);
         Route::get('/getbanners', [ProductController::class,'banner']);
+        Route::get('/get_address', [ProductController::class,'get_address']);
     });
 // });

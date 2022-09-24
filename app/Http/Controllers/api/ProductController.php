@@ -160,25 +160,25 @@ class ProductController extends Controller
     {
         try{
             $validator = Validator::make($request->all(), [
-                'products' => 'required',
-                'total_price' => 'required'
+                'order_data' => 'required',
             ]);
             if ($validator->fails())
             {
                 return $this->errorResponse(['errors'=>$validator->errors()], 422);
             }
-            $products=json_decode($request->products,true);
+            $products=json_decode($request->order_data,true);
             if(count($products)>0){
                 $order=new Order;
-                $order->total_price=$request->total_price;
+                $order->total_price=$products['totalprice'];
                 $order->user_id=Auth::user()->id;
                 $order->save();
                 $address=new OrderAddressDetails;
                 $address->order_id=$order->id;
-                $address->address_details=isset($request->address) && !empty($request->address) ? $request->address : "---" ;
+                $address->address_details=json_encode($products['address']);
+                $address->user_id=Auth::user()->id;
                 $address->save();
-                foreach($products as $product){
-                    $cartlists=Addtocart::with('products')->where(['id'=>$product['cart_id']])->first();
+                foreach($products['productId'] as $product){
+                    $cartlists=Addtocart::with('products')->where(['id'=>$product])->first();
                     $cart=new Orderproduct();
                     $cart->user_id=Auth::user()->id;
                     $cart->product_id=$cartlists->product_id;
@@ -186,7 +186,6 @@ class ProductController extends Controller
                     $cart->quantity=$cartlists->quantity;
                     $cart->price=$cartlists->products->price;
                     $cart->save();
-
                     $cartlists->delete();
                 }
             }
@@ -201,6 +200,24 @@ class ProductController extends Controller
         try{
             $banners=Banner::orderBy('step','asc')->get();
             return $this->successResponse($banners,"Banner retrieved Successfully");
+        }catch(Exception $ex){
+            return $this->errorResponse($ex->getMessage(), 422);
+        }
+    }
+
+    public function get_address()
+    {
+        try{
+            $banners=OrderAddressDetails::where('user_id',Auth::user()->id)->orderBy('created_at','desc')->get()->map(function($data){
+                return [
+                    'id'=>$data->id,
+                    'order_id'=>$data->order_id,
+                    'address'=>json_decode($data->address_details),
+                    'user_id'=>$data->user_id,
+                    'created_at'=>$data->created_at
+                ];
+            });
+            return $this->successResponse($banners,"Address retrieved Successfully");
         }catch(Exception $ex){
             return $this->errorResponse($ex->getMessage(), 422);
         }
